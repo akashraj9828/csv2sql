@@ -1,7 +1,9 @@
 @echo off
+cls
 del a.class
-REM javac a.java
-javac -Xlint a.java
-java -verbose a
+javac a.java
+REM javac -Xlint a.java
+REM java -verbose a
+java a
 
 REM code out.sql
