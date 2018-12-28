@@ -6,10 +6,16 @@
 
 ## Usage:
 - Place the CSV file in the same directory as the java file.
-
+- If no paramters passed by default values are -
+  > *  Input file:- in.csv
+  > *  Output file:- out.sql
+  > *  Table name:- TABLE_NAME
+  > *  Ignore error:- false
+  > *  Print header:- true
+  > *  Print sql:- false
 - #### Windows user:
    -    ```sh
-        $ run inputfile.csv outputfile.sql 
+        $ run inputfile.csv outputfile.sql tablename
          ```
          Example.:
         ``` sh
