@@ -1,5 +1,5 @@
 @echo off
 cls
-del a.class
-javac a.java
-java a %1 %2 %3 
+del CSV2SQL.class
+javac CSV2SQL.java
+java CSV2SQL %1 %2 %3 

@@ -3,7 +3,7 @@ import java.lang.reflect.Array;
 import java.util.StringTokenizer;
 import java.util.*;
 
-class a {
+class CSV2SQL {
     static Vector<String> header = new Vector<String>();
     static Boolean print_csv = false;
     static Boolean print_header = true;
