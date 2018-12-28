@@ -1,2 +1,6 @@
 *.sql
 *.csv
+*.jar
+*.js
+./in
+./out
