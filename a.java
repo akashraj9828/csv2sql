@@ -1,44 +1,51 @@
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.StringTokenizer;
-
-// import java.util.a;
 import java.util.*;
 
-class ParametersMismatch extends Exception{
-    
-}
 class a {
     static Vector<String> header = new Vector<String>();
     static Boolean print_csv = false;
-    static String db_name = "airports";
-    static String csv_name = "temp.csv";
+    static Boolean print_header =true;
+    static String table_name = "airports";
+    static String csv_name = "temp.csv";    //input file
+    static String sql_name = "oupqow.sql";    //output file
+    
 
+    /*args
+        [0]=input file.csv
+        [1]=output file.sql
+        [2]=table name
+        [3]=other args like show header or to make update sql
+        
+    */ 
     public static void main(String args[]) {
+        
+        if(args.length>0)
+        init(args);
         setHeaders();
         writeSQL();
     }
-
+    public static void init(String args[]){
+        csv_name=args[0];
+        sql_name=args[1];
+        table_name=args[2];
+    }
     public static void setHeaders() {
         String s;
 
         try (BufferedReader fin = new BufferedReader(new FileReader(csv_name))) {
-            // BufferedReader fin=new BuffereReader( new FileReader("airport.csv"));
-            // FileWriter fout=new FileWriter("out.sql");
-
             s = fin.readLine();
             StringTokenizer st = new StringTokenizer(s, ",");
             while (st.hasMoreTokens()) {
                 header.add(st.nextToken());
             }
 
-            // print("HEADERS::");
-            // for (String h : header) {
-            // print(h);
-            // }
+            if(print_header)
+            print("****************** HEADERS ******************\n"+ header.toString());
 
         } catch (Exception e) {
-
+            print(e);
         }
     }
 
@@ -48,7 +55,7 @@ class a {
 
         Vector<String> data = new Vector<String>();
         try (BufferedReader fin = new BufferedReader(new FileReader(csv_name))) {
-            try (BufferedWriter fout = new BufferedWriter(new FileWriter("out.sql"))) {
+            try (BufferedWriter fout = new BufferedWriter(new FileWriter(sql_name))) {
 
                 s = fin.readLine();
                 s = fin.readLine();// to skip first line cuz its header
@@ -70,13 +77,13 @@ class a {
                     // StringTokenizer st = new StringTokenizer(s, ",");
 
                     count++;
-                    sql.append("/* INSERT QUERY NO: " + count + " */\n");
-                    sql.append("INSERT INTO " + db_name + "(");
+                    sql.append("/* INSERT QUERY NO: " + count + "*/\n");
+                    sql.append("INSERT INTO " + table_name + "(");
                     for (String temp : header) {
-                        if(header.lastElement()!=temp)
-                        sql.append(temp + ",");
+                        if (header.lastElement() != temp)
+                            sql.append("`"+temp + "`,");
                         else
-                        sql.append(temp + "");
+                            sql.append("`"+temp + "`");
                     }
                     sql.append(")\nVALUES \n(");
 
@@ -129,25 +136,28 @@ class a {
                         int last = p.size() - 1;
                         p.remove(last);
                     }
-                    print("header size: "+header.size());
+                    // print("header size: "+header.size());
                     if (p.size() != header.size()) {
-                        print("ERROR AT CSV LINE : " + (count+1) + "no. elements don't match no. elements in header : size :"+p.size());
-                        print(p.toString());
-
+                        String err = "";
+                        err += ":::ERROR AT CSV LINE : " + (count + 1) + "\n";
+                        err += ":::::Expected no. of elements: " + header.size() + " no.of elements: " + p.size()
+                                + "\n";
+                        print(err);
                     }
                     // print("header: " + header.size() + "\t cols: " + p.size());
-                    
+
                     for (String x : p) {
                         String temp = x;
-                        // print(temp);                        
+                        temp=temp.replace("'", "`");
+                        // print(temp);
                         if (temp.matches("-?\\d+"))
                             sql.append("" + temp + "");
                         else
-                            sql.append("`" + temp + "`");
-                        if(p.lastElement()!=x)
-                        sql.append(",");
+                            sql.append("'" + temp + "'");
+                        if (p.lastElement() != x)
+                            sql.append(",");
                         else
-                        sql.append("");
+                            sql.append("");
                         // System.out.println(temp);
 
                     }
@@ -157,15 +167,16 @@ class a {
                     fout.write(sql.toString());
                     // print("count:" + combine_count);
                     s = fin.readLine();
-                    combine_count=0;
+                    combine_count = 0;
                 }
             }
         } catch (Exception e) {
+            print(e);
+            
         }
 
     }
 
-   
     public static void print(String args[]) {
 
         for (int i = 0; i < args.length; i++) {
@@ -182,10 +193,10 @@ class a {
 
         System.out.println(a);
     }
+
     public static void print(Object o) {
 
         System.out.println(o);
     }
 
 }
-
